@@ -3,15 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>io.scalecube</groupId>
-		<artifactId>configuration-parent</artifactId>
-		<version>0.0.5-SNAPSHOT</version>
-	</parent>
-
 	<artifactId>scalecube-seed</artifactId>
-
-	<name>scalecube-seed</name>
+	<name>scalecube seed</name>
+        <groupId>io.scalecube</groupId>
+        <version>0.0.7-SNAPSHOT</version>
 
 	<url>http://maven.apache.org</url>
 
@@ -22,8 +17,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.scalecube</groupId>
-			<artifactId>scalecube-package-utils</artifactId>
-			<version>0.0.5-SNAPSHOT</version>
+			<artifactId>scalecube-services</artifactId>
+			<version>1.0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
