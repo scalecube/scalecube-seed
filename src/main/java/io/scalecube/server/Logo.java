@@ -74,7 +74,8 @@ public class Logo {
     }
 
     public Builder website() {
-      headers.put(startAt + headers.size() + 2, new LogoHeader("      http://scalecube.io"));
+      headers.put(startAt + headers.size() + 2, new LogoHeader("http://scalecube.io"));
+      headers.put(startAt + headers.size() + 2, new LogoHeader("https://github.com/scalecube"));
       return this;
     }
 
