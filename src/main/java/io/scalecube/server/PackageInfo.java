@@ -50,9 +50,9 @@ public class PackageInfo {
   }
 
   private void defaultProps() {
+    properties.put("artifactId", "Development");
     properties.put("version", "Development");
     properties.put("groupId", "Development");
-    properties.put("artifactId", "Development");
     properties.put("version", "Development");
     properties.put("version", "Development");
   }
@@ -69,11 +69,11 @@ public class PackageInfo {
     return properties.getProperty("artifactId");
   }
 
-  public String java() {
+  public static String java() {
     return System.getProperty("java.version");
   }
 
-  public String os() {
+  public static String os() {
     return System.getProperty("os.name");
   }
 
@@ -82,7 +82,7 @@ public class PackageInfo {
    * 
    * @return host name.
    */
-  public String hostname() {
+  public static String hostname() {
     String result = getVariable("HOSTNAME", "unknown");
     if ("unknown".equals(result)) {
       return getHostName("unknown");
@@ -91,7 +91,7 @@ public class PackageInfo {
     }
   }
 
-  private String getHostName(String defaultValue) {
+  private static String getHostName(String defaultValue) {
     String hostname = defaultValue;
     try {
       InetAddress addr = InetAddress.getLocalHost();
@@ -102,24 +102,18 @@ public class PackageInfo {
     return hostname;
   }
 
-  public String pid() {
+  public static String pid() {
     String vmName = ManagementFactory.getRuntimeMXBean().getName();
     int pids = vmName.indexOf("@");
     String pid = vmName.substring(0, pids);
     return pid;
   }
 
-  /**
-   * resolves redis address.
-   */
-  public String redisAddress() {
-    return getVariable("REDIS_ADDRESS", "redis://localhost:6379");
-  }
 
   /**
    * Returns API Gateway API.
    */
-  public int gatewayPort() {
+  public static int gatewayPort() {
     String port = getVariable("API_GATEWAY_PORT", "8081");
     return Integer.valueOf(port);
   }
@@ -129,7 +123,7 @@ public class PackageInfo {
    * 
    * @return seed address as string for example localhost:4801.
    */
-  public Address[] seedAddress() {
+  public static Address[] seedAddress() {
     String list = getVariable("SC_SEED_ADDRESS", null);
     if (list != null && !list.isEmpty()) {
       String[] hosts = list.split(",");
@@ -144,7 +138,7 @@ public class PackageInfo {
     }
   }
 
-  private String getVariable(String name, String defaultValue) {
+  private static String getVariable(String name, String defaultValue) {
     if (System.getenv(name) != null) {
       return System.getenv(name);
     }
@@ -153,6 +147,5 @@ public class PackageInfo {
     }
     return defaultValue;
   }
-
 
 }
