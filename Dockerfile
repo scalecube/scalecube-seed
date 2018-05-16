@@ -1,12 +1,9 @@
-FROM anapsix/alpine-java:8_jdk
+FROM openjdk:8
 
 MAINTAINER info@scalecube.io
 
 # copy package information.
-ADD target/maven-archiver/pom.properties                   /usr/dev/root/package.properties
-
-# Add the service itself
-ADD target/server-jar-with-dependencies.jar                                      /usr/dev/root/server.jar
+ADD target/maven-archiver/pom.properties                   /usr/src/myapp/package.properties
 
 # Cluster control port and communication port.
 EXPOSE 4801 4802
@@ -18,7 +15,15 @@ EXPOSE 4801 4802
 # SC_SEED_ADDRESS: the list of seed nodes to join a cluster
 ###################################################################
 
-ENV SC_HOME="/usr/dev/root/" \
+ENV SC_HOME="/usr/src/myapp/" \
     SC_SEED_ADDRESS="172.17.0.2:4802, 172.17.0.3:4802, 172.17.0.4:4802"
 
-ENTRYPOINT ["java", "-jar", "/usr/dev/root/server.jar"]
+ARG JARFILE
+ARG MAINCLASS
+
+# Add the service itself
+COPY target/${JARFILE} /usr/src/myapp/${JARFILE}
+ENV FILE ${JARFILE}
+WORKDIR /usr/src/myapp
+ENV JAVA_OPTS=
+CMD java $JAVA_OPTS -jar $FILE -Xmn2g
