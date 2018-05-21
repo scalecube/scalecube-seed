@@ -26,7 +26,7 @@
         
         <dockerfile.maven.extension.version>1.3.7</dockerfile.maven.extension.version>
         <dockerfile.maven.version>1.3.7</dockerfile.maven.version>
-        <dockerfile.repository>scalcube/${project.artifactId}</dockerfile.repository>
+        <dockerfile.repository>scalecube/${project.artifactId}</dockerfile.repository>
         <dockerfile.useMavenSettingsForAuth>true</dockerfile.useMavenSettingsForAuth>
     </properties>
 
