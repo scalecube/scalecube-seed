@@ -23,7 +23,7 @@
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <maven-release-plugin.version>2.5</maven-release-plugin.version>
         <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
-        
+
         <dockerfile.maven.extension.version>1.3.7</dockerfile.maven.extension.version>
         <dockerfile.maven.version>1.3.7</dockerfile.maven.version>
         <dockerfile.repository>scalecube/${project.artifactId}</dockerfile.repository>
@@ -170,6 +170,7 @@
                             <buildArgs>
                                 <JARFILE>${project.build.finalName}-shaded.jar</JARFILE>
                                 <MAINCLASS>${mainClass}</MAINCLASS>
+                                <JDKVERSION>${jdkversion}</JDKVERSION>
                             </buildArgs>
                         </configuration>
                     </execution>
@@ -181,6 +182,7 @@
                         <phase>install</phase>
                         <configuration>
                             <tag>${project.version}</tag>
+                            <tag>${project.version}-${jdkversion}</tag>
                         </configuration>
                     </execution>
                     <execution>
@@ -201,6 +203,7 @@
                         <phase>deploy</phase>
                         <configuration>
                             <tag>${project.version}</tag>
+                            <tag>${project.version}-${jdkversion}</tag>
                         </configuration>
                     </execution>
                 </executions>
@@ -260,5 +263,17 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>WITHOUT_JDK_VERSION</id>
+            <properties>
+                <jdkversion>8-slim</jdkversion>
+            </properties>
+            <activation>
+                <property>
+                    <name>!jdkversion</name>
+                </property>
+            </activation>
+        </profile>
+
     </profiles>
 </project>

@@ -8,6 +8,18 @@ services:
 - docker
 jdk:
 - oraclejdk8
+env:
+env:
+  - VERSION=11-jre-slim
+  - VERSION=10-jre-slim
+  - VERSION=9-jre-slim
+  - VERSION=8-jre
+  - VERSION=8-jre-slim
+  - VERSION=8-jre-alpine
+  - VERSION=8-jdk
+  - VERSION=8-jdk-slim
+  - VERSION=8-jdk-alpine 
+
 notifications:
   email: false
   slack:

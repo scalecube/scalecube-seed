@@ -1,4 +1,5 @@
-FROM openjdk:8
+ARG JDKVERSION=8-slim
+FROM openjdk:$JDKVERSION
 
 MAINTAINER info@scalecube.io
 
