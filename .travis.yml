@@ -8,7 +8,7 @@ services:
 - docker
 jdk:
 - oraclejdk8
-env:
+
 env:
   - VERSION=11-jre-slim
   - VERSION=10-jre-slim
@@ -32,7 +32,7 @@ after_success:
 - java -jar ~/codacy-coverage-reporter-assembly.jar -l Java -r ./services/target/site/jacoco/jacoco.xml
 deploy:
 - provider: script
-  script: mvn -P release deploy -DskipTests=true -B -V -s travis-settings.xml
+  script: mvn -P release deploy -Djdkversion=$VERSION -DskipTests=true -B -V -s travis-settings.xml
   on:
     branch: develop
 - provider: script
