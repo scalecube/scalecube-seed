@@ -25,6 +25,8 @@
   </scm>
 
   <properties>
+    <mainClass>io.scalecube.seed.SeedRunner</mainClass>
+
     <scalecube-services.version>2.4.6</scalecube-services.version>
     <scalecube-config.version>0.3.6</scalecube-config.version>
     <log4j.version>2.11.1</log4j.version>
@@ -47,11 +49,27 @@
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services-discovery</artifactId>
       <version>${scalecube-services.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services-transport-rsocket</artifactId>
       <version>${scalecube-services.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-buffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
@@ -77,4 +95,19 @@
       <version>${log4j.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
