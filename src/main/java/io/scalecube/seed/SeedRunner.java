@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 public class SeedRunner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SeedRunner.class);
+  private static final String DECORATOR =
+      "#######################################################################";
 
   /**
    * Main runner.
@@ -38,7 +40,10 @@ public class SeedRunner {
             .value()
             .orElseThrow(() -> new IllegalStateException("Couldn't load config"));
 
-    LOGGER.info("Starting seed microservice instance");
+    LOGGER.info(DECORATOR);
+    LOGGER.info("Starting Seed with {}", config);
+    LOGGER.info(DECORATOR);
+
     Microservices.builder()
         .discovery(
             options ->
@@ -57,7 +62,7 @@ public class SeedRunner {
 
   public static class Config {
 
-    int discoveryPort;
+    Integer discoveryPort;
     List<String> seeds;
     String memberHost;
     Integer memberPort;
@@ -69,7 +74,13 @@ public class SeedRunner {
      */
     Address[] seedAddresses() {
       return Optional.ofNullable(seeds)
-          .map(seeds -> seeds.stream().map(Address::from).toArray(Address[]::new))
+          .map(
+              seeds ->
+                  seeds
+                      .stream()
+                      .filter(s -> !s.isEmpty())
+                      .map(Address::from)
+                      .toArray(Address[]::new))
           .orElse(new Address[0]);
     }
 
