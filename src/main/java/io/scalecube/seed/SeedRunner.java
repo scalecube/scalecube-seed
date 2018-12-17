@@ -11,6 +11,7 @@ import io.scalecube.services.transport.api.Address;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -78,6 +79,7 @@ public class SeedRunner {
               seeds ->
                   seeds
                       .stream()
+                      .filter(Objects::nonNull)
                       .filter(s -> !s.isEmpty())
                       .map(Address::from)
                       .toArray(Address[]::new))
@@ -87,7 +89,7 @@ public class SeedRunner {
     @Override
     public String toString() {
       final StringBuilder sb = new StringBuilder("Config{");
-      sb.append(", discoveryPort=").append(discoveryPort);
+      sb.append("discoveryPort=").append(discoveryPort);
       sb.append(", seeds=").append(seeds);
       sb.append(", memberHost=").append(memberHost);
       sb.append(", memberPort=").append(memberPort);
@@ -98,9 +100,10 @@ public class SeedRunner {
 
   static class ConfigBootstrap {
 
-    private static final Pattern CONFIG_PATTERN = Pattern.compile("(.*)config(.*)?\\.properties");
-    private static final Predicate<Path> PATH_PREDICATE =
-        path -> CONFIG_PATTERN.matcher(path.toString()).matches();
+    private static final Pattern CONFIG_FILE_PATTERN =
+        Pattern.compile("(.*)config(.*)?\\.properties");
+    private static final Predicate<Path> CONFIG_PATH_PREDICATE =
+        path -> CONFIG_FILE_PATTERN.matcher(path.getFileName().toString()).matches();
 
     /**
      * ConfigRegistry method factory.
@@ -113,7 +116,7 @@ public class SeedRunner {
               .addListener(new Slf4JConfigEventListener())
               .addLastSource("sys_prop", new SystemPropertiesConfigSource())
               .addLastSource("env_var", new SystemEnvironmentConfigSource())
-              .addLastSource("cp", new ClassPathConfigSource(PATH_PREDICATE))
+              .addLastSource("cp", new ClassPathConfigSource(CONFIG_PATH_PREDICATE))
               .jmxEnabled(false)
               .build());
     }
