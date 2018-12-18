@@ -1,29 +1,15 @@
 FROM openjdk:8
 
-MAINTAINER info@scalecube.io
+LABEL maintainer="info@scalecube.io"
 
-# copy package information.
-ADD target/maven-archiver/pom.properties                   /usr/src/myapp/package.properties
+WORKDIR /opt/scalecube
 
 # Cluster control port and communication port.
 EXPOSE 4801 4802
 
-###################################################################
-# Environment Variables:
-# -----------------------------------------------------------------
-# SC_HOME:         the root folder for a scalecube node.
-# SC_SEED_ADDRESS: the list of seed nodes to join a cluster
-###################################################################
+# Copy jar
+ARG EXECUTABLE_JAR
+COPY target/lib lib
+COPY target/${EXECUTABLE_JAR}.jar app.jar
 
-ENV SC_HOME="/usr/src/myapp/" \
-    SC_SEED_ADDRESS="172.17.0.2:4802, 172.17.0.3:4802, 172.17.0.4:4802"
-
-ARG JARFILE
-ARG MAINCLASS
-
-# Add the service itself
-COPY target/${JARFILE} /usr/src/myapp/${JARFILE}
-ENV FILE ${JARFILE}
-WORKDIR /usr/src/myapp
-ENV JAVA_OPTS=
-CMD java $JAVA_OPTS -jar $FILE -Xmn2g
+ENTRYPOINT exec java $JAVA_OPTS -Dlog4j.configurationFile=log4j2-seed.xml -jar app.jar

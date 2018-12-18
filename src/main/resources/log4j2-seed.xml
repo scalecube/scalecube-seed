@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+  <Properties>
+    <Property name="patternLayout">%level{length=1} %d{ISO8601} %c{1.} %m [%t]%n</Property>
+  </Properties>
+
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="${patternLayout}"/>
+    </Console>
+
+    <RollingFile name="FILE"
+        fileName="logs/server.log"
+        filePattern="logs/server-%d{yyyy-MM-dd-HH}-%i.log">
+      <PatternLayout pattern="${patternLayout}"/>
+      <Policies>
+        <OnStartupTriggeringPolicy/>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="50MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="1000"/>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="io.netty" level="warn"/>
+    <Logger name="reactor.netty" level="warn"/>
+    <Logger name="io.scalecube.services" level="info"/>
+
+    <Root level="${env:logLevel:-debug}">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+
+</Configuration>
