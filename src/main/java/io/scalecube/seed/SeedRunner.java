@@ -11,6 +11,7 @@ import io.scalecube.services.transport.api.Address;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -21,6 +22,8 @@ import org.slf4j.LoggerFactory;
 public class SeedRunner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SeedRunner.class);
+  private static final String DECORATOR =
+      "#######################################################################";
 
   /**
    * Main runner.
@@ -38,7 +41,10 @@ public class SeedRunner {
             .value()
             .orElseThrow(() -> new IllegalStateException("Couldn't load config"));
 
-    LOGGER.info("Starting seed microservice instance");
+    LOGGER.info(DECORATOR);
+    LOGGER.info("Starting Seed with {}", config);
+    LOGGER.info(DECORATOR);
+
     Microservices.builder()
         .discovery(
             options ->
@@ -57,7 +63,7 @@ public class SeedRunner {
 
   public static class Config {
 
-    int discoveryPort;
+    Integer discoveryPort;
     List<String> seeds;
     String memberHost;
     Integer memberPort;
@@ -69,14 +75,21 @@ public class SeedRunner {
      */
     Address[] seedAddresses() {
       return Optional.ofNullable(seeds)
-          .map(seeds -> seeds.stream().map(Address::from).toArray(Address[]::new))
+          .map(
+              seeds ->
+                  seeds
+                      .stream()
+                      .filter(Objects::nonNull)
+                      .filter(s -> !s.isEmpty())
+                      .map(Address::from)
+                      .toArray(Address[]::new))
           .orElse(new Address[0]);
     }
 
     @Override
     public String toString() {
       final StringBuilder sb = new StringBuilder("Config{");
-      sb.append(", discoveryPort=").append(discoveryPort);
+      sb.append("discoveryPort=").append(discoveryPort);
       sb.append(", seeds=").append(seeds);
       sb.append(", memberHost=").append(memberHost);
       sb.append(", memberPort=").append(memberPort);
@@ -87,9 +100,10 @@ public class SeedRunner {
 
   static class ConfigBootstrap {
 
-    private static final Pattern CONFIG_PATTERN = Pattern.compile("(.*)config(.*)?\\.properties");
-    private static final Predicate<Path> PATH_PREDICATE =
-        path -> CONFIG_PATTERN.matcher(path.toString()).matches();
+    private static final Pattern CONFIG_FILE_PATTERN =
+        Pattern.compile("(.*)config(.*)?\\.properties");
+    private static final Predicate<Path> CONFIG_PATH_PREDICATE =
+        path -> CONFIG_FILE_PATTERN.matcher(path.getFileName().toString()).matches();
 
     /**
      * ConfigRegistry method factory.
@@ -102,7 +116,7 @@ public class SeedRunner {
               .addListener(new Slf4JConfigEventListener())
               .addLastSource("sys_prop", new SystemPropertiesConfigSource())
               .addLastSource("env_var", new SystemEnvironmentConfigSource())
-              .addLastSource("cp", new ClassPathConfigSource(PATH_PREDICATE))
+              .addLastSource("cp", new ClassPathConfigSource(CONFIG_PATH_PREDICATE))
               .jmxEnabled(false)
               .build());
     }
