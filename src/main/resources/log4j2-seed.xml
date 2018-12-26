@@ -30,6 +30,7 @@
 
     <Root level="${env:logLevel:-debug}">
       <AppenderRef ref="STDOUT"/>
+      <AppenderRef ref="FILE"/>
     </Root>
   </Loggers>
 
