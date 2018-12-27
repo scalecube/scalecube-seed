@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.scalecube</groupId>
     <artifactId>scalecube-parent-pom</artifactId>
-    <version>0.0.16</version>
+    <version>0.0.17</version>
   </parent>
 
   <artifactId>scalecube-seed</artifactId>
@@ -24,7 +24,7 @@
   <properties>
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
 
-    <scalecube-services.version>2.4.7</scalecube-services.version>
+    <scalecube-services.version>2.4.9</scalecube-services.version>
     <scalecube-config.version>0.3.6</scalecube-config.version>
     <log4j.version>2.11.1</log4j.version>
   </properties>
