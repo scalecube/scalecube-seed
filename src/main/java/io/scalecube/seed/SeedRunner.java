@@ -60,6 +60,7 @@ public class SeedRunner {
                     .memberPort(config.memberPort))
         .start().doOnNext(microservices -> 
           Logo.from(new PackageInfo())
+            .ip(microservices.discovery().address().host())
             .port("" + microservices.discovery().address().port())
             .draw())
         .block();
