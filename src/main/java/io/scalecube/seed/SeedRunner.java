@@ -1,5 +1,7 @@
 package io.scalecube.seed;
 
+import io.scalecube.app.decoration.Logo;
+import io.scalecube.app.packages.PackageInfo;
 import io.scalecube.config.ConfigRegistry;
 import io.scalecube.config.ConfigRegistrySettings;
 import io.scalecube.config.audit.Slf4JConfigEventListener;
@@ -56,8 +58,12 @@ public class SeedRunner {
                     .port(config.discoveryPort)
                     .memberHost(config.memberHost)
                     .memberPort(config.memberPort))
-        .startAwait();
-
+        .start().doOnNext(microservices -> 
+          Logo.from(new PackageInfo())
+            .ip(microservices.discovery().address().host())
+            .port("" + microservices.discovery().address().port())
+            .draw())
+        .block();
     Thread.currentThread().join();
   }
 
