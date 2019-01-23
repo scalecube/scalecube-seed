@@ -26,7 +26,7 @@
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
 
     <scalecube-services.version>2.4.9</scalecube-services.version>
-    <scalecube-config.version>0.3.6</scalecube-config.version>
+    <scalecube-config.version>0.3.9</scalecube-config.version>
     <log4j.version>2.11.1</log4j.version>
   </properties>
 
