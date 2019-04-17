@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>io.scalecube</groupId>
     <artifactId>scalecube-parent-pom</artifactId>
-    <version>0.0.17</version>
+    <version>0.0.19</version>
   </parent>
 
   <artifactId>scalecube-seed</artifactId>
@@ -23,14 +25,46 @@
 
   <properties>
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
-
-    <scalecube-services.version>2.4.9</scalecube-services.version>
-    <scalecube-config.version>0.3.6</scalecube-config.version>
+    <scalecube-services.version>2.5.4</scalecube-services.version>
+    <scalecube-config.version>0.3.9</scalecube-config.version>
     <log4j.version>2.11.1</log4j.version>
+    <reactor.version>Californium-SR5</reactor.version>
+    <netty.version>4.1.34.Final</netty.version>
+    <scalecube-app-utils.version>0.0.4</scalecube-app-utils.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Reactor -->
+      <dependency>
+        <groupId>io.projectreactor</groupId>
+        <artifactId>reactor-bom</artifactId>
+        <version>${reactor.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Netty -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${netty.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <!-- ScaleCube -->
+    <dependency>
+      <groupId>io.scalecube</groupId>
+      <artifactId>scalecube-app-utils</artifactId>
+      <version>${scalecube-app-utils.version}</version>
+    </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services</artifactId>
@@ -58,10 +92,6 @@
       <artifactId>scalecube-services-transport-rsocket</artifactId>
       <version>${scalecube-services.version}</version>
       <exclusions>
-        <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-buffer</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
@@ -94,6 +124,23 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <targetPath>./</targetPath>
+        <includes>
+          <include>package.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -107,4 +154,31 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>sc-version-defined</id>
+      <activation>
+        <property>
+          <name>env.SERVICESVER</name>
+        </property>
+      </activation>
+      <properties>
+        <scalecube-services.version>${env.SERVICESVER}</scalecube-services.version>
+        <extratags>SC-${env.SERVICESVER}</extratags>
+      </properties>
+    </profile>
+    <profile>
+      <id>sc-version-undefined</id>
+      <activation>
+        <property>
+          <name>!env.SERVICESVER</name>
+        </property>
+      </activation>
+      <properties>
+        <scalecube-services.version>LATEST</scalecube-services.version>
+      </properties>
+    </profile>
+  </profiles>
+
 </project>
