@@ -23,7 +23,7 @@
 
   <properties>
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
-    <scalecube-services.version>2.5.4</scalecube-services.version>
+    <scalecube-services.version>2.5.10</scalecube-services.version>
     <scalecube-config.version>0.3.9</scalecube-config.version>
     <log4j.version>2.11.1</log4j.version>
     <reactor.version>Californium-SR5</reactor.version>

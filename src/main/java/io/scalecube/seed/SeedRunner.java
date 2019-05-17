@@ -35,7 +35,7 @@ public class SeedRunner {
    * @param args program arguments
    * @throws InterruptedException exception thrown
    */
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     LOGGER.info("Reading seed configuration");
     ConfigRegistry configRegistry = ConfigBootstrap.configRegistry();
 
@@ -71,8 +71,9 @@ public class SeedRunner {
                     .ip(microservices.discovery().address().host())
                     .port("" + microservices.discovery().address().port())
                     .draw())
+        .block()
+        .onShutdown()
         .block();
-    Thread.currentThread().join();
   }
 
   public static class Config {
