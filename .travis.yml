@@ -3,10 +3,7 @@ addons:
     packages:
     - libxml-xpath-perl
 env:
-  - SERVICESVER=2.4.6
-  - SERVICESVER=2.4.7  
-  - SERVICESVER=2.4.8
-  - SERVICESVER=2.4.9
+  - SERVICESVER=2.5.4
 
 sudo: required
 language: java

@@ -9,9 +9,11 @@ import io.scalecube.config.source.ClassPathConfigSource;
 import io.scalecube.config.source.SystemEnvironmentConfigSource;
 import io.scalecube.config.source.SystemPropertiesConfigSource;
 import io.scalecube.services.Microservices;
-import io.scalecube.services.transport.api.Address;
+import io.scalecube.services.discovery.ScalecubeServiceDiscovery;
+import io.scalecube.services.transport.rsocket.RSocketServiceTransport;
+import io.scalecube.services.transport.rsocket.RSocketTransportResources;
+import io.scalecube.transport.Address;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +35,7 @@ public class SeedRunner {
    * @param args program arguments
    * @throws InterruptedException exception thrown
    */
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     LOGGER.info("Reading seed configuration");
     ConfigRegistry configRegistry = ConfigBootstrap.configRegistry();
 
@@ -49,22 +51,29 @@ public class SeedRunner {
 
     Microservices.builder()
         .discovery(
-            options ->
-                options
-                    .seeds(
-                        Arrays.stream(config.seedAddresses())
-                            .map(address -> Address.create(address.host(), address.port()))
-                            .toArray(Address[]::new))
-                    .port(config.discoveryPort)
-                    .memberHost(config.memberHost)
-                    .memberPort(config.memberPort))
-        .start().doOnNext(microservices -> 
-          Logo.from(new PackageInfo())
-            .ip(microservices.discovery().address().host())
-            .port("" + microservices.discovery().address().port())
-            .draw())
+            serviceEndpoint ->
+                new ScalecubeServiceDiscovery(serviceEndpoint)
+                    .options(
+                        opts ->
+                            opts.seedMembers(config.seedAddresses())
+                                .port(config.discoveryPort)
+                                .memberHost(config.memberHost)
+                                .memberPort(config.memberPort)))
+        .transport(
+            opts ->
+                opts.resources(RSocketTransportResources::new)
+                    .client(RSocketServiceTransport.INSTANCE::clientTransport)
+                    .server(RSocketServiceTransport.INSTANCE::serverTransport))
+        .start()
+        .doOnNext(
+            microservices ->
+                Logo.from(new PackageInfo())
+                    .ip(microservices.discovery().address().host())
+                    .port("" + microservices.discovery().address().port())
+                    .draw())
+        .block()
+        .onShutdown()
         .block();
-    Thread.currentThread().join();
   }
 
   public static class Config {
@@ -83,8 +92,7 @@ public class SeedRunner {
       return Optional.ofNullable(seeds)
           .map(
               seeds ->
-                  seeds
-                      .stream()
+                  seeds.stream()
                       .filter(Objects::nonNull)
                       .filter(s -> !s.isEmpty())
                       .map(Address::from)
