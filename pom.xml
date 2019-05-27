@@ -23,30 +23,28 @@
 
   <properties>
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
-    <scalecube-services.version>2.5.10</scalecube-services.version>
-    <scalecube-config.version>0.3.9</scalecube-config.version>
+    <scalecube-services.version>2.6.2</scalecube-services.version>
+    <scalecube-config.version>0.3.11</scalecube-config.version>
     <log4j.version>2.11.1</log4j.version>
-    <reactor.version>Californium-SR5</reactor.version>
-    <netty.version>4.1.34.Final</netty.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <netty.version>4.1.36.Final</netty.version>
+    <reactor-netty.version>0.8.8.RELEASE</reactor-netty.version>
     <scalecube-app-utils.version>0.0.4</scalecube-app-utils.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- Reactor -->
+      <!-- Slf4j -->
       <dependency>
-        <groupId>io.projectreactor</groupId>
-        <artifactId>reactor-bom</artifactId>
-        <version>${reactor.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
-
       <!-- Netty -->
       <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-common</artifactId>
-        <version>${netty.version}</version>
+        <groupId>io.projectreactor.netty</groupId>
+        <artifactId>reactor-netty</artifactId>
+        <version>${reactor-netty.version}</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
@@ -67,34 +65,16 @@
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services</artifactId>
       <version>${scalecube-services.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services-discovery</artifactId>
       <version>${scalecube-services.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services-transport-rsocket</artifactId>
       <version>${scalecube-services.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
@@ -105,12 +85,6 @@
       <groupId>io.scalecube</groupId>
       <artifactId>config</artifactId>
       <version>${scalecube-config.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- Logging -->
@@ -145,6 +119,9 @@
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <includeScope>runtime</includeScope>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>com.spotify</groupId>
