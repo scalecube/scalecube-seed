@@ -33,7 +33,6 @@ public class SeedRunner {
    * Main runner.
    *
    * @param args program arguments
-   * @throws InterruptedException exception thrown
    */
   public static void main(String[] args) {
     LOGGER.info("Reading seed configuration");
