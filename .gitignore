@@ -1,27 +1,17 @@
-# Eclipse project files
-.project
-.classpath
-.settings
+# everything that starts with dot (hidden files)
+.*
+# except this file
+!.gitignore
+# except this file-extention
+!.*.yml
+
+# Build targets
+**/target/
+
+# logs and reports
+*.csv
+*.log
+*.zip
 
 # IntelliJ IDEA project files and directories
 *.iml
-*.ipr
-*.iws
-.idea/
-
-# Build targets
-/target
-*/target
-
-# Report directories
-/reports
-*/reports
-
-# Logs
-/logs
-
-# Mac-specific directory that no other operating system needs.
-.DS_Store
-
-# JVM crash logs
-hs_err_pid*.log
