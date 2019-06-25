@@ -12,4 +12,4 @@ ARG EXECUTABLE_JAR
 COPY target/lib lib
 COPY target/${EXECUTABLE_JAR}.jar app.jar
 
-ENTRYPOINT exec java $JAVA_OPTS -Dlog4j.configurationFile=log4j2-seed.xml -jar app.jar
+ENTRYPOINT exec java $JAVA_OPTS -jar app.jar
