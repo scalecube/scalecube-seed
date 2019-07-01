@@ -12,7 +12,6 @@ import io.scalecube.net.Address;
 import io.scalecube.services.Microservices;
 import io.scalecube.services.discovery.ScalecubeServiceDiscovery;
 import io.scalecube.services.transport.rsocket.RSocketServiceTransport;
-import io.scalecube.services.transport.rsocket.RSocketTransportResources;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -58,11 +57,7 @@ public class SeedRunner {
                                 .port(config.discoveryPort)
                                 .memberHost(config.memberHost)
                                 .memberPort(config.memberPort)))
-        .transport(
-            opts ->
-                opts.resources(RSocketTransportResources::new)
-                    .client(RSocketServiceTransport.INSTANCE::clientTransport)
-                    .server(RSocketServiceTransport.INSTANCE::serverTransport))
+        .transport(opts -> opts.serviceTransport(RSocketServiceTransport::new))
         .start()
         .doOnNext(
             microservices ->
