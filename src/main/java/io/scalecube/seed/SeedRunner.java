@@ -20,6 +20,8 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.netty.tcp.TcpClient;
+import reactor.netty.tcp.TcpServer;
 
 /** Seed Node server. */
 public class SeedRunner {
@@ -53,11 +55,23 @@ public class SeedRunner {
                 new ScalecubeServiceDiscovery(serviceEndpoint)
                     .options(
                         opts ->
-                            opts.seedMembers(config.seedAddresses())
-                                .port(config.discoveryPort)
+                            opts.membership(cfg -> cfg.seedMembers(config.seedAddresses()))
+                                .transport(cfg -> cfg.port(config.discoveryPort))
                                 .memberHost(config.memberHost)
                                 .memberPort(config.memberPort)))
-        .transport(opts -> opts.serviceTransport(RSocketServiceTransport::new))
+        .transport(
+            () ->
+                new RSocketServiceTransport()
+                    .tcpClient(
+                        loopResources ->
+                            TcpClient.newConnection()
+                                .runOn(loopResources)
+                                .wiretap(false)
+                                .noProxy()
+                                .noSSL())
+                    .tcpServer(
+                        loopResources ->
+                            TcpServer.create().wiretap(false).runOn(loopResources).noSSL()))
         .start()
         .doOnNext(
             microservices ->
