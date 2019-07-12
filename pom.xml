@@ -129,30 +129,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>sc-version-defined</id>
-      <activation>
-        <property>
-          <name>env.SERVICESVER</name>
-        </property>
-      </activation>
-      <properties>
-        <scalecube-services.version>${env.SERVICESVER}</scalecube-services.version>
-        <extratags>SC-${env.SERVICESVER}</extratags>
-      </properties>
-    </profile>
-    <profile>
-      <id>sc-version-undefined</id>
-      <activation>
-        <property>
-          <name>!env.SERVICESVER</name>
-        </property>
-      </activation>
-      <properties>
-        <scalecube-services.version>LATEST</scalecube-services.version>
-      </properties>
-    </profile>
-  </profiles>
-
 </project>
