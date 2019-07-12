@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -23,7 +25,7 @@
 
   <properties>
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
-    <scalecube-services.version>2.7.2</scalecube-services.version>
+    <scalecube-services.version>2.8.0</scalecube-services.version>
     <scalecube-config.version>0.3.11</scalecube-config.version>
     <reactor.version>Californium-SR8</reactor.version>
     <log4j.version>2.11.1</log4j.version>
@@ -78,16 +80,6 @@
     <dependency>
       <groupId>io.scalecube</groupId>
       <artifactId>scalecube-services-discovery</artifactId>
-      <version>${scalecube-services.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.scalecube</groupId>
-      <artifactId>scalecube-services-transport-rsocket</artifactId>
-      <version>${scalecube-services.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.scalecube</groupId>
-      <artifactId>scalecube-services-transport-jackson</artifactId>
       <version>${scalecube-services.version}</version>
     </dependency>
     <dependency>
