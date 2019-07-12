@@ -132,11 +132,11 @@
   <profiles>
     <profile>
       <id>sc-version-defined</id>
-      <activation>
+      <!--activation>
         <property>
           <name>env.SERVICESVER</name>
         </property>
-      </activation>
+      </activation-->
       <properties>
         <scalecube-services.version>${env.SERVICESVER}</scalecube-services.version>
         <extratags>SC-${env.SERVICESVER}</extratags>
@@ -144,11 +144,11 @@
     </profile>
     <profile>
       <id>sc-version-undefined</id>
-      <activation>
+      <!--activation>
         <property>
           <name>!env.SERVICESVER</name>
         </property>
-      </activation>
+      </activation-->
       <properties>
         <scalecube-services.version>LATEST</scalecube-services.version>
       </properties>
