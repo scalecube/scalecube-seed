@@ -11,7 +11,6 @@ import io.scalecube.config.source.SystemPropertiesConfigSource;
 import io.scalecube.net.Address;
 import io.scalecube.services.Microservices;
 import io.scalecube.services.discovery.ScalecubeServiceDiscovery;
-import io.scalecube.services.transport.rsocket.RSocketServiceTransport;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -20,8 +19,6 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.netty.tcp.TcpClient;
-import reactor.netty.tcp.TcpServer;
 
 /** Seed Node server. */
 public class SeedRunner {
@@ -59,19 +56,6 @@ public class SeedRunner {
                                 .transport(cfg -> cfg.port(config.discoveryPort))
                                 .memberHost(config.memberHost)
                                 .memberPort(config.memberPort)))
-        .transport(
-            () ->
-                new RSocketServiceTransport()
-                    .tcpClient(
-                        loopResources ->
-                            TcpClient.newConnection()
-                                .runOn(loopResources)
-                                .wiretap(false)
-                                .noProxy()
-                                .noSSL())
-                    .tcpServer(
-                        loopResources ->
-                            TcpServer.create().wiretap(false).runOn(loopResources).noSSL()))
         .start()
         .doOnNext(
             microservices ->

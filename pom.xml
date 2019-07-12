@@ -84,16 +84,6 @@
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
-      <artifactId>scalecube-services-transport-rsocket</artifactId>
-      <version>${scalecube-services.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.scalecube</groupId>
-      <artifactId>scalecube-services-transport-jackson</artifactId>
-      <version>${scalecube-services.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.scalecube</groupId>
       <artifactId>config</artifactId>
       <version>${scalecube-config.version}</version>
     </dependency>
