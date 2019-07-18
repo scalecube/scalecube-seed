@@ -2,8 +2,6 @@ addons:
   apt:
     packages:
     - libxml-xpath-perl
-env:
-  - SERVICESVER=2.8.0
 
 sudo: required
 language: java
