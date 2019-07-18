@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>scalecube-seed</artifactId>
-  <version>0.1.5-SNAPSHOT</version>
+  <version>0.1.11-SNAPSHOT</version>
 
   <name>ScaleCube Seed</name>
 
@@ -23,7 +23,7 @@
 
   <properties>
     <mainClass>io.scalecube.seed.SeedRunner</mainClass>
-    <scalecube-services.version>2.7.0</scalecube-services.version>
+    <scalecube-services.version>2.8.1</scalecube-services.version>
     <scalecube-config.version>0.3.11</scalecube-config.version>
     <reactor.version>Californium-SR8</reactor.version>
     <log4j.version>2.11.1</log4j.version>
@@ -82,16 +82,6 @@
     </dependency>
     <dependency>
       <groupId>io.scalecube</groupId>
-      <artifactId>scalecube-services-transport-rsocket</artifactId>
-      <version>${scalecube-services.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.scalecube</groupId>
-      <artifactId>scalecube-services-transport-jackson</artifactId>
-      <version>${scalecube-services.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.scalecube</groupId>
       <artifactId>config</artifactId>
       <version>${scalecube-config.version}</version>
     </dependency>
@@ -142,11 +132,11 @@
   <profiles>
     <profile>
       <id>sc-version-defined</id>
-      <activation>
+      <!--activation>
         <property>
           <name>env.SERVICESVER</name>
         </property>
-      </activation>
+      </activation-->
       <properties>
         <scalecube-services.version>${env.SERVICESVER}</scalecube-services.version>
         <extratags>SC-${env.SERVICESVER}</extratags>
@@ -154,11 +144,11 @@
     </profile>
     <profile>
       <id>sc-version-undefined</id>
-      <activation>
+      <!--activation>
         <property>
           <name>!env.SERVICESVER</name>
         </property>
-      </activation>
+      </activation-->
       <properties>
         <scalecube-services.version>LATEST</scalecube-services.version>
       </properties>
