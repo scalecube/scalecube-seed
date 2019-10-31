@@ -10,11 +10,13 @@ import io.scalecube.config.source.SystemEnvironmentConfigSource;
 import io.scalecube.config.source.SystemPropertiesConfigSource;
 import io.scalecube.net.Address;
 import io.scalecube.services.Microservices;
+import io.scalecube.services.ServiceEndpoint;
 import io.scalecube.services.discovery.ScalecubeServiceDiscovery;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import org.slf4j.LoggerFactory;
 public class SeedRunner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SeedRunner.class);
+
   private static final String DECORATOR =
       "#######################################################################";
 
@@ -38,34 +41,41 @@ public class SeedRunner {
 
     Config config =
         configRegistry
-            .objectProperty("io.scalecube.seed", Config.class)
+            .objectProperty(SeedRunner.class.getPackage().getName(), Config.class)
             .value()
             .orElseThrow(() -> new IllegalStateException("Couldn't load config"));
 
     LOGGER.info(DECORATOR);
-    LOGGER.info("Starting Seed with {}", config);
+    LOGGER.info("Starting Seed, {}", config);
     LOGGER.info(DECORATOR);
 
+    //noinspection ConstantConditions
     Microservices.builder()
-        .discovery(
-            serviceEndpoint ->
-                new ScalecubeServiceDiscovery(serviceEndpoint)
-                    .options(
-                        opts ->
-                            opts.membership(cfg -> cfg.seedMembers(config.seedAddresses()))
-                                .transport(cfg -> cfg.port(config.discoveryPort))
-                                .memberHost(config.memberHost)
-                                .memberPort(config.memberPort)))
+        .discovery(serviceEndpoint -> newServiceDiscovery(config, serviceEndpoint))
         .start()
-        .doOnNext(
-            microservices ->
-                Logo.from(new PackageInfo())
-                    .ip(microservices.discovery().address().host())
-                    .port("" + microservices.discovery().address().port())
-                    .draw())
+        .doOnNext(SeedRunner::newLogo)
         .block()
         .onShutdown()
         .block();
+  }
+
+  private static ScalecubeServiceDiscovery newServiceDiscovery(
+      Config config, ServiceEndpoint serviceEndpoint) {
+    return new ScalecubeServiceDiscovery(serviceEndpoint)
+        .options(
+            opts ->
+                opts.membership(cfg -> cfg.seedMembers(config.seedAddresses()))
+                    .transport(cfg -> cfg.port(config.discoveryPort))
+                    .memberHost(config.memberHost)
+                    .memberPort(config.memberPort)
+                    .memberAlias(config.memberAlias));
+  }
+
+  private static void newLogo(Microservices microservices) {
+    Logo.from(new PackageInfo())
+        .ip(microservices.discovery().address().host())
+        .port("" + microservices.discovery().address().port())
+        .draw();
   }
 
   public static class Config {
@@ -74,12 +84,8 @@ public class SeedRunner {
     List<String> seeds;
     String memberHost;
     Integer memberPort;
+    String memberAlias;
 
-    /**
-     * Returns seeds as an {@link Address}'s array.
-     *
-     * @return {@link Address}'s array
-     */
     Address[] seedAddresses() {
       return Optional.ofNullable(seeds)
           .map(
@@ -94,13 +100,13 @@ public class SeedRunner {
 
     @Override
     public String toString() {
-      final StringBuilder sb = new StringBuilder("Config{");
-      sb.append("discoveryPort=").append(discoveryPort);
-      sb.append(", seeds=").append(seeds);
-      sb.append(", memberHost=").append(memberHost);
-      sb.append(", memberPort=").append(memberPort);
-      sb.append('}');
-      return sb.toString();
+      return new StringJoiner(", ", Config.class.getSimpleName() + "[", "]")
+          .add("discoveryPort=" + discoveryPort)
+          .add("seeds=" + seeds)
+          .add("memberHost='" + memberHost + "'")
+          .add("memberPort=" + memberPort)
+          .add("memberAlias=" + memberAlias)
+          .toString();
     }
   }
 
@@ -111,11 +117,6 @@ public class SeedRunner {
     private static final Predicate<Path> CONFIG_PATH_PREDICATE =
         path -> CONFIG_FILE_PATTERN.matcher(path.getFileName().toString()).matches();
 
-    /**
-     * ConfigRegistry method factory.
-     *
-     * @return configRegistry
-     */
     static ConfigRegistry configRegistry() {
       return ConfigRegistry.create(
           ConfigRegistrySettings.builder()
