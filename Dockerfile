@@ -3,6 +3,7 @@ FROM openjdk:8
 LABEL maintainer="info@scalecube.io"
 
 ARG EXECUTABLE_JAR
+ENV JMX_PORT 5678
 
 WORKDIR /opt/scalecube
 
@@ -12,8 +13,6 @@ ENV DEFAULT_JAVA_OPTS="-server \
 -Dsun.rmi.dgc.server.gcInterval=3600000"
 
 ENV DEFAULT_JMX_OPTS="-Dcom.sun.management.jmxremote \
--Dcom.sun.management.jmxremote.port=5678 \
--Dcom.sun.management.jmxremote.rmi.port=5678 \
 -Dcom.sun.management.jmxremote.authenticate=false \
 -Dcom.sun.management.jmxremote.ssl=false \
 -Dcom.sun.management.jmxremote.local.only=false \
@@ -27,7 +26,7 @@ COPY target/lib lib
 COPY target/${EXECUTABLE_JAR}.jar app.jar
 
 # jmx server port
-EXPOSE 5678
+EXPOSE $JMX_PORT
 
 # Cluster control port and communication port.
 EXPOSE 4801 4802
@@ -37,5 +36,7 @@ $DEFAULT_JAVA_OPTS \
 $JAVA_OPTS \
 $DEFAULT_JMX_OPTS \
 $DEFAULT_OOM_OPTS \
+-Dcom.sun.management.jmxremote.port=$JMX_PORT \
+-Dcom.sun.management.jmxremote.rmi.port=$JMX_PORT \
 -Dlog4j.configurationFile=log4j2.xml \
 -jar app.jar $PROGRAM_ARGS
