@@ -6,19 +6,16 @@ import io.scalecube.config.ConfigRegistry;
 import io.scalecube.config.ConfigRegistrySettings;
 import io.scalecube.config.audit.Slf4JConfigEventListener;
 import io.scalecube.config.source.ClassPathConfigSource;
-import io.scalecube.config.source.SystemEnvironmentConfigSource;
 import io.scalecube.config.source.SystemPropertiesConfigSource;
 import io.scalecube.net.Address;
 import io.scalecube.services.Microservices;
 import io.scalecube.services.ServiceEndpoint;
 import io.scalecube.services.discovery.ScalecubeServiceDiscovery;
 import io.scalecube.services.discovery.api.ServiceDiscovery;
-import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,11 +72,11 @@ public class SeedRunner {
 
   public static class Config {
 
-    Integer discoveryPort;
-    List<String> seeds;
-    String memberAlias;
+    int discoveryPort = 4801;
+    List<String> seeds = Collections.emptyList();
+    String memberAlias = "seed";
 
-    public Integer discoveryPort() {
+    public int discoveryPort() {
       return discoveryPort;
     }
 
@@ -87,7 +84,7 @@ public class SeedRunner {
       return memberAlias;
     }
 
-    List<Address> seedAddresses() {
+    public List<Address> seedAddresses() {
       return seeds.stream().map(Address::from).collect(Collectors.toList());
     }
 
@@ -103,19 +100,16 @@ public class SeedRunner {
 
   static class ConfigBootstrap {
 
-    private static final Pattern CONFIG_FILE_PATTERN =
-        Pattern.compile("(.*)config(.*)?\\.properties");
-    private static final Predicate<Path> CONFIG_PATH_PREDICATE =
-        path -> CONFIG_FILE_PATTERN.matcher(path.getFileName().toString()).matches();
-
     static ConfigRegistry configRegistry() {
       return ConfigRegistry.create(
           ConfigRegistrySettings.builder()
-              .addListener(new Slf4JConfigEventListener())
-              .addLastSource("sys_prop", new SystemPropertiesConfigSource())
-              .addLastSource("env_var", new SystemEnvironmentConfigSource())
-              .addLastSource("cp", new ClassPathConfigSource(CONFIG_PATH_PREDICATE))
               .jmxEnabled(false)
+              .addListener(new Slf4JConfigEventListener())
+              .addLastSource("system", new SystemPropertiesConfigSource())
+              .addLastSource(
+                  "classpath",
+                  ClassPathConfigSource.createWithPattern(
+                      "config.properties", Collections.emptyList()))
               .build());
     }
   }

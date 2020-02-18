@@ -55,6 +55,9 @@
     <Logger name="reactor.core" level="${env:reactorCoreLogLevel:-WARN}"/>
     <Logger name="reactor.netty" level="${env:reactorNettyLogLevel:-WARN}"/>
     <Logger name="io.netty" level="${env:nettyLogLevel:-WARN}"/>
+    <logger name="io.rsocket.transport.netty" level="${env:rsocketTransportNettyLogLevel:-WARN}"/>
+    <logger name="io.rsocket.FrameLogger" level="${env:rsocketFrameLoggerLogLevel:-WARN}"/>
+    <logger name="io.rsocket" level="${env:rsocketLogLevel:-INFO}"/>
 
     <Root level="${env:logLevel:-DEBUG}">
       <AppenderRef ref="${env:logAppender:-STDOUT}"/>
