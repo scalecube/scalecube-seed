@@ -73,9 +73,9 @@ public class SeedRunner {
 
   public static class Config {
 
-    int discoveryPort = 4801;
-    List<String> seeds = Collections.emptyList();
-    String memberAlias = "seed";
+    private int discoveryPort = 4801;
+    private List<String> seeds = Collections.emptyList();
+    private String memberAlias = "seed";
 
     public int discoveryPort() {
       return discoveryPort;
