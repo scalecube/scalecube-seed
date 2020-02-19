@@ -6,6 +6,7 @@ import io.scalecube.config.ConfigRegistry;
 import io.scalecube.config.ConfigRegistrySettings;
 import io.scalecube.config.audit.Slf4JConfigEventListener;
 import io.scalecube.config.source.ClassPathConfigSource;
+import io.scalecube.config.source.SystemEnvironmentConfigSource;
 import io.scalecube.config.source.SystemPropertiesConfigSource;
 import io.scalecube.net.Address;
 import io.scalecube.services.Microservices;
@@ -40,7 +41,7 @@ public class SeedRunner {
         configRegistry
             .objectProperty(Config.class.getPackage().getName(), Config.class)
             .value()
-            .orElseThrow(() -> new IllegalStateException("Couldn't load config"));
+            .orElseThrow(() -> new IllegalStateException("Couldn't load config: " + Config.class));
 
     LOGGER.info(DECORATOR);
     LOGGER.info("Starting Seed, {}", config);
@@ -105,6 +106,7 @@ public class SeedRunner {
           ConfigRegistrySettings.builder()
               .jmxEnabled(false)
               .addListener(new Slf4JConfigEventListener())
+              .addLastSource("environment", new SystemEnvironmentConfigSource())
               .addLastSource("system", new SystemPropertiesConfigSource())
               .addLastSource(
                   "classpath",
