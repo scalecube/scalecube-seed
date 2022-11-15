@@ -30,7 +30,7 @@
 
     <scalecube-services.version>2.8.10-RC3</scalecube-services.version>
     <scalecube-config.version>0.4.0-RC4</scalecube-config.version>
-    <jackson.version>2.10.0.pr1</jackson.version>
+    <jackson.version>2.12.7.1</jackson.version>
     <log4j.version>2.11.1</log4j.version>
     <slf4j.version>1.7.30</slf4j.version>
     <netty.version>4.1.37.Final</netty.version>
